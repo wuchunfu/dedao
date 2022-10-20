@@ -29,6 +29,7 @@ var (
 
 func init() {
 	Instance = new(ConfigsData)
+	Instance.configFilePath = configFilePath
 	if err := Instance.init(); err != nil {
 		log.Fatal(err)
 	}
