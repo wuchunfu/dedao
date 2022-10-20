@@ -1,8 +1,8 @@
-# dedao-dl
+# dedao
 
-> 🦉 用 go 写的一个 《得到》 APP 课程下载工具，扫码或者使用 cookie 登录后，可在终端查看已购买的课程，听书书架，电子书架，锦囊，推荐话题等
+> 🦉 《得到》 APP web端接口，可查看已购买的课程，听书书架，电子书架，锦囊，推荐话题等
 
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/yann0917/dedao-dl)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/yann0917/dedao)
 
 ## 特别声明
 
@@ -12,210 +12,69 @@
 
 仅供个人学习使用，请尊重版权，内容版权均为得到所有，请勿传播内容！！！
 
-## 特性
+## 目录结构
 
-* 可查看**购买**的课程，课程文章内容
-* 可查看听书书架，电子书架列表
-* 可查看已购买的锦囊
-* 可查看知识城邦推荐话题精选内容
-* 课程可生成PDF，文稿生成 Markdown 文档，也可生成 mp3 文件
-* 每天听本书可下载音频，文稿生成 Markdown 文档
-* 电子书可下载 pdf
-* 可切换登录账号
+```text
+.
+├── LICENSE
+├── README.md
+├── app
+│   ├── article.go
+│   ├── base.go
+│   ├── course.go
+│   ├── download.go
+│   ├── ebook.go
+│   ├── login.go
+│   └── topic.go
+├── config
+│   ├── config.go
+│   └── dedao.go
+├── downloader
+│   ├── downloader.go
+│   └── types.go
+├── go.mod
+├── go.sum
+├── request
+│   ├── download.go
+│   └── http.go
+├── services // 请求
+│   ├── article.go
+│   ├── chapter.go
+│   ├── course.go
+│   ├── course_category.go
+│   ├── ebook.go
+│   ├── login.go
+│   ├── media.go
+│   ├── requester.go
+│   ├── service.go
+│   ├── service_test.go
+│   ├── topic.go
+│   └── user.go
+└── utils
+    ├── chromedp.go
+    ├── chromedp_test.go
+    ├── crypt.go
+    ├── ffmpeg.go
+    ├── html2epub.go
+    ├── json.go
+    ├── pool.go
+    ├── qrcode.go
+    ├── svg2html.go
+    ├── utils.go
+    └── utils_test.go
+```
 
 ## 安装
 
-### 安装依赖
-
-`dedao-dl` 支持markdown文本下载，pdf下载，以及音频下载，请按照自己的下载需求，安装下列依赖：
-
-#### pdf下载
-* google chrome
-  > 课程生成 PDF 需要借助 [Google-Chrome](https://www.google.cn/intl/zh-CN/chrome/)的渲染引擎
-* wkhtmltopdf
-  > 电子书转 PDF 需要借助[wkhtmltopdf](https://wkhtmltopdf.org/downloads.html)
-
-#### 音频下载
-* ffmpeg
-  > 音频需要借助 [ffmpeg](https://ffmpeg.org/) 合成
-
-#### markdown文本下载
-不需要额外安装依赖
-
-### 使用二进制文件安装
-进入[下载列表](https://github.com/yann0917/dedao/releases),下载对应的系统版本，下载后即可使用。
-
-### 使用 `go` 安装
-
-安装go，版本需大于1.18，并设置GOPATH环境变量, 并在PATH中添加$GOPATH/bin
-
 使用如下命令安装：
 
-`go install github.com/yann0917/dedao@latest`
-
-### 使用 Docker 运行
-
-> 为了加快 build 速度，`alpine` 镜像源已修改为阿里镜像。(docker 内没有安装 wkhtmltopdf 不能下载电子书)
-
-如果不想在本地安装 `ffmpeg` 和 `chromedp` 则提供了 `docker` 环境，参考以下命令构建并使用容器执行相关命令。
-
-```bash
-# build
-docker build https://github.com/yann0917/dedao.git#main -t dedao
-
-# 登录
-docker run -v `pwd`/config.json:/app/config.json -it --rm dedao login -q
-
-docker run -v `pwd`/config.json:/app/config.json -it --rm dedao cat
-# 查看课程
-docker run -v `pwd`/config.json:/app/config.json -it --rm dedao course
-
-# 查看电子书
-docker run -v `pwd`/config.json:/app/config.json -it --rm dedao ebook
-
-# 下载课程
-docker run -v `pwd`/output:/app/output -v `pwd`/config.json:/app/config.json -it --rm dedao dl xxx
-# 下载每天听本书
-docker run -v `pwd`/output:/app/output -v `pwd`/config.json:/app/config.json -it --rm dedao dlo xxx
-
-```
-
-#### 删除 `docker images` 中为 `none` 的镜像
-
-```bash
-docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker stop
-docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker rm
-docker images|grep none|awk '{print $3 }'|xargs docker rmi
-```
+`go get -u github.com/yann0917/dedao`
 
 ## 使用方法
 
-* 使用 `dedao-dl login -q` **同时支持「得到App」和「微信」扫码扫码登录**，或者电脑端登录 [得到](https://www.dedao.cn) 生成 cookie 使用 `dedao-dl login -c "xxxxxxxx"` 登录 ☆☆☆☆☆
-
-`dedao-dl -h` 可查看帮助说明，每个命令都有 `-h` 参数可查看该命令的用法
-
-```bash
-Usage:
-  dedao-dl [command]
-
-Available Commands:
-  ace         获取我的锦囊
-  article     获取文章详情
-  cat         获取课程分类
-  course      获取我购买过课程
-  dl          下载已购买课程, 并转换成 PDF & 音频 & markdown
-  dle         下载电子书
-  dlo         下载每天听本书音频
-  ebook       获取我的电子书架
-  help        Help about any command
-  login       登录得到 pc 端 https://www.dedao.cn
-  odob        获取我的听书书架
-  su          切换登录账号
-  topic       获取推荐话题列表
-  users       查看登录过的用户列表
-  who         查看当前登录的用户
-```
-
-`dedao-dl cat` 获取课程分类
-
-```text
-+---+----------+------+----------+
-| # |   名称   |  统计 |  分类标签  |
-+---+----------+------+----------+
-| 0 | 全部     | 1696 | all      |
-| 1 | 课程     |   64 | bauhinia |
-| 2 | 听书书架  | 1407 | odob     |
-| 3 | 电子书架  |  210 | ebook    |
-| 4 | 锦囊      |   15 | compass  |
-+---+----------+------+----------+
-```
-
-`dedao-dl course` 获取我购买过课程
-
-```text
-+----+-----+-------------------------+--------------------------------+---------------------+--------+----------+
-| #  | ID  |          课程名称        |                作者             |      购买日期       |  价格  | 学习进度 |
-+----+-----+-------------------------+--------------------------------+---------------------+--------+----------+
-|  0 |  51 | 张潇雨·个人投资课          | 张潇雨·对冲基金管理人            | 2020-08-17 09:59:56 | 199.00 |      100 |
-|  1 | 560 | 吴军·硅谷来信³（年度日更） | 吴军·计算机科学家                 | 2020-11-05 09:28:23 | 299.00 |       14 |
-|  2 | 571 | 年度得到·何帆中国经济报告  | 何帆·著名经济学者                 | 2020-12-10 07:22:28 |  99.00 |       36 |
-|  3 |  21 | 古典·超级个体              | 古典·资深生涯规划师             | 2019-09-23 17:11:02 | 199.00 |       84 |
-|  4 |  79 | 老喻的人生算法课           | 老喻·思考者                     | 2019-09-23 17:13:51 |  99.00 |      100 |
-|  5 |  84 | 给忙碌者的女性健康课       | 常青·协和医学院博士               | 2020-10-27 21:30:55 |  19.90 |      100 |
-|  6 |  16 | 陈海贤·自我发展心理学      | 陈海贤·心理学博士                 | 2019-09-23 17:13:46 |  99.00 |      100 |
-|  7 | 544 | 听书番外篇                | 阿狮·每天听本书负责人             | 2020-08-18 15:43:44 |   0.00 |      100 |
-|  8 | 530 | 跟李松蔚学心理咨询         | 李松蔚·心理咨询师                 | 2020-07-01 11:01:44 |  99.00 |      100 |
-|  9 | 484 | 王立铭·抑郁症医学课        | 王立铭·浙江大学生命科学研究院教授    | 2020-10-27 13:15:36 |  39.90 |      100 |
-| 10 |  82 | 陈海贤·亲密关系30讲        | 陈海贤·心理学博士                 | 2019-11-05 00:02:21 |  99.00 |      100 |
-+----+-----+-------------------------+---------------------------------+---------------------+--------+----------+
-```
-
-`dedao-dl course -i xxx` 查看课程信息
-
-```text
-专栏名称：张潇雨·个人投资课
-专栏作者：张潇雨·对冲基金管理人
-更新进度：60/60
-课程亮点：1. 这是一门适用于普通投资者的课程。即使你没有专业技巧，没有额外的时间精力，也可以通过课程找到适合自己的投资策略与工具，建立自己的投资体系。
-
-2. 这门课程能帮你重建正确的投资常识，从源头上杜绝投资失误。个人投资本来是一条宽敞平坦的康庄大道。只是有太多错误的岔路需要避免。课程的前14讲都在给你指出岔路，带你回到正途。
-
-3. 投资的难点永远在于实操。课程中有16讲实操内容，帮你解决不知道投资产品怎么选、选什么的问题，以及当极端情况出现时你该怎么办。
-
-4. 张潇雨老师在投资银行、私募基金、对冲基金、家族办公室都曾任职，可以说管理过各种各样的钱。所以，他能告诉你为什么很多看似高深的投资方法恰恰不能用于个人投资。
-
-5. 这一次，知识真的就是财富。
-
-+---+------+----------------------------+------+---------------------+--------------+
-| # |  ID  |            章节            | 讲数 |      更新时间       | 是否更新完成 |
-+---+------+----------------------------+------+---------------------+--------------+
-| 0 | 1040 | 导论(3讲)                  |    3 | 2019-05-05 23:52:31 | ✔            |
-| 1 | 1041 | 模块一：市场规律(6讲)      |    6 | 2019-06-02 00:26:29 | ✔            |
-| 2 | 1042 | 模块二：投资工具(6讲)      |    6 | 2019-06-02 00:26:36 | ✔            |
-| 3 | 1043 | 模块三：自我局限(6讲)      |    6 | 2019-06-02 00:26:43 | ✔            |
-| 4 | 1044 | 模块四：投资组合构建(9讲)  |    9 | 2019-06-02 00:26:50 | ✔            |
-| 5 | 1503 | 模块五：投资实战(16讲)     |   16 | 2020-09-14 14:46:30 | ✔            |
-| 6 | 1045 | 结语(1讲)                  |    1 | 2020-09-14 15:07:06 | ✔            |
-| 7 | 1046 | 附录(2讲)                  |    2 | 2020-09-14 15:07:00 | ✔            |
-| 8 | 1502 | 加餐丨货币的基础逻辑(11讲) |   11 | 2020-09-14 14:48:57 | ✔            |
-+---+------+----------------------------+------+---------------------+--------------+
-```
-
-`dedao-dl article -i xxx` 查看课程文章信息
-
-```markdown
-+----+-------+----------------------------------------------------------+---------------------+----------+
-| #  |  ID   |                         课程名称                         |      更新时间       | 是否阅读 |
-+----+-------+----------------------------------------------------------+---------------------+----------+
-|  0 | 86033 | 发刊词丨这一次，知识就是财富                             | 2019-05-05 23:44:19 | ✔        |
-|  1 | 86037 | 01丨普通投资者的优势                                     | 2019-05-05 23:44:33 | ✔        |
-|  2 | 86038 | 02丨普通投资者的劣势                                     | 2019-05-05 23:44:57 | ✔        |
-|  3 | 86040 | 03丨多元分散：房子还会不会是表现最好的资产？             | 2019-05-05 23:45:24 | ✔        |
-|  4 | 86051 | 04丨择时陷阱：“低买高卖”可以实现么？                     | 2019-05-07 00:00:00 | ✔        |
-|  5 | 86074 | 05丨宏观迷信：自下而上的投资逻辑                         | 2019-05-08 00:00:01 | ✔        |
-|  6 | 86080 | 06丨风险度量：怎样真正地理解风险和亏损？                 | 2019-05-09 00:00:02 | ✔        |
-|  7 | 86081 | 07丨海外配置：人人都可以买下全球市场                     | 2019-05-10 00:00:00 | ✔        |
-|  8 | 86082 | 08丨第一模块问答：该何时卖出一只股票？                   | 2019-05-11 00:00:01 | ✔        |
-|  9 | 86083 | 09丨指数基金：买到伟大公司的最好机会                     | 2019-05-12 00:00:00 | ✔        |
-+----+-------+----------------------------------------------------------+---------------------+----------+
-```
-
-`dedao-dl dl 123 -t 1` 下载课程ID 123 的所有课程, -t 下载格式, 1:mp3, 2:PDF文档, 3:markdown文档 (default 1)
-
-注意：生成 PDF 的时候，操作过于频繁会触发 `496 NoCertificate` , 因此每次生成一次PDF sleep 0~5秒, 尽管如此，还是有极大可能触发操作频繁图形验证。
-
-`dedao-dl dle 123 -t 1` 下载电子书，先通过 `dedao-dl ebook` 获取要下载的电子书 id,  下载格式, 1:html, 2:PDF文档, 3:epub (default 1)
-
-`dedao-dl dlo 123 -t 1` 下载听书ID 123 的音频或文稿, 先通过 `dedao-dl odob` 获取要下载的听书 id, -t 下载格式, 1:mp3, 3:markdown文档 (default 1)
-
-## References
-
-* [geektime-dl](https://github.com/mmzou/geektime-dl)
-* [annie](https://github.com/iawia002/annie)
-
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/yann0917/dedao-dl.svg)](https://starchart.cc/yann0917/dedao-dl)
+[![Stargazers over time](https://starchart.cc/yann0917/dedao.svg)](https://starchart.cc/yann0917/dedao)
 
 ## License
 
@@ -223,6 +82,6 @@ Available Commands:
 
 ## Support
 
-[![jetbrains](https://s1.ax1x.com/2020/03/26/G9uQoR.png)](https://www.jetbrains.com/?from=dedao-dl)
+[![jetbrains](https://s1.ax1x.com/2020/03/26/G9uQoR.png)](https://www.jetbrains.com/?from=dedao)
 
 ---
