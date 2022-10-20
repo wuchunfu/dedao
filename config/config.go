@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -23,8 +24,15 @@ var (
 	configFilePath = filepath.Join(GetConfigDir(), ConfigName)
 
 	// Instance 配置信息 全局调用
-	Instance = New(configFilePath)
+	Instance *ConfigsData
 )
+
+func init() {
+	Instance = new(ConfigsData)
+	if err := Instance.init(); err != nil {
+		log.Fatal(err)
+	}
+}
 
 // DedaoUsers user
 type DedaoUsers []*Dedao
