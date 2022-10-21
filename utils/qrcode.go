@@ -101,14 +101,14 @@ func (v *qrcodeTerminal) Get2(bytes []byte) (result *QRCodeString) {
 	return
 }
 
-func New2(front, back consoleColor, level qrcodeRecoveryLevel) *qrcodeTerminal {
+func NewQrCodeTerminal2(front, back consoleColor, level qrcodeRecoveryLevel) *qrcodeTerminal {
 	obj := qrcodeTerminal{front: front, back: back, level: level}
 	return &obj
 }
 
-func New() *qrcodeTerminal {
+func NewQrCodeTerminal() *qrcodeTerminal {
 	front, back, level := ConsoleColors.BrightBlack, ConsoleColors.BrightWhite, QRCodeRecoveryLevels.Medium
-	return New2(front, back, level)
+	return NewQrCodeTerminal2(front, back, level)
 }
 
 func (v *qrcodeTerminal) getQRCodeString(data [][]bool) (result *QRCodeString) {

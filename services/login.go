@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/pkg/errors"
-	"github.com/yann0917/dedao/utils"
 )
 
 type QrCodeResp struct {
@@ -39,9 +38,6 @@ func (s *Service) GetQrcode(token string) (resp *QrCodeResp, err error) {
 		err = errors.Wrap(err, "request login err")
 		return
 	}
-	content := "https://m.igetget.com/oauth/qrcode/v2/authorize?token=" + resp.Data.QrCodeString
-	obj := utils.New()
-	obj.Get(content).Print()
 
 	return
 }
