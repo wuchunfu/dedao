@@ -24,7 +24,7 @@ var (
 	configFilePath = filepath.Join(GetConfigDir(), ConfigName)
 
 	// Instance 配置信息 全局调用
-	Instance = &ConfigsData{}
+	Instance *ConfigsData
 )
 
 func init() {
