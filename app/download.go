@@ -284,7 +284,7 @@ func extractOdobDownloadData(aid int) []downloader.Datum {
 	article := config.Instance.GetIDMap(CateAudioBook, aid)
 	aliasID := article["audio_alias_id"].(string)
 	if aliasID == "" {
-		list, err := CourseList(CateAudioBook)
+		list, err := CourseListAll(CateAudioBook)
 		if err != nil {
 			return nil
 		}
@@ -542,7 +542,7 @@ func DownloadMarkdown(cType string, id, aid int, path string) error {
 		info := config.Instance.GetIDMap(CateAudioBook, id)
 		aliasID := info["audio_alias_id"].(string)
 		if aliasID == "" {
-			list, err := CourseList(cType)
+			list, err := CourseListAll(cType)
 			if err != nil {
 				return err
 			}

@@ -79,20 +79,14 @@ type NotesList struct {
 
 // NoteDetail note detail
 type NoteDetail struct {
-	DetailTitle string      `json:"detail_title"`
-	Comb        interface{} `json:"comb"`
-	State       int         `json:"state"`
-	IsMine      bool        `json:"is_mine"`
-	IsReposted  bool        `json:"is_reposted"`
-	IsLike      bool        `json:"is_like"`
-	OwnUIDHazy  string      `json:"own_uid_hazy"`
-	Topic       struct {
-		TopicID     int    `json:"topic_id"`
-		TopicIDHazy string `json:"topic_id_hazy"`
-		IsElected   bool   `json:"is_elected"`
-		IsTopmost   bool   `json:"is_topmost"`
-		TopicName   string `json:"topic_name"`
-	} `json:"topic"`
+	DetailTitle     string        `json:"detail_title"`
+	Comb            interface{}   `json:"comb"`
+	State           int           `json:"state"`
+	IsMine          bool          `json:"is_mine"`
+	IsReposted      bool          `json:"is_reposted"`
+	IsLike          bool          `json:"is_like"`
+	OwnUIDHazy      string        `json:"own_uid_hazy"`
+	Topic           NoteTopic     `json:"topic"`
 	Tags            []interface{} `json:"tags"`
 	Folders         interface{}   `json:"folders"`
 	NoteCount       NoteCount     `json:"note_count"`
@@ -103,6 +97,14 @@ type NoteDetail struct {
 	Level           int           `json:"level"`
 	LevelType       int           `json:"level_type"`
 	LevelPermission bool          `json:"level_permission"`
+}
+
+type NoteTopic struct {
+	TopicID     int    `json:"topic_id"`
+	TopicIDHazy string `json:"topic_id_hazy"`
+	IsElected   bool   `json:"is_elected"`
+	IsTopmost   bool   `json:"is_topmost"`
+	TopicName   string `json:"topic_name"`
 }
 
 // NoteCount note count

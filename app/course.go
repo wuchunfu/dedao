@@ -11,8 +11,26 @@ func CourseType() (list *services.CourseCategoryList, err error) {
 	return
 }
 
+func CourseList(category, order string, page, limit int) (list *services.CourseList, err error) {
+	list, err = getService().CourseList(category, order, page, limit)
+	idMap := make(config.CourseIDMap, len(list.List))
+	switch category {
+	case CateCourse:
+		for _, course := range list.List {
+			idMap[course.ClassID] = GetCourseIDMap(&course)
+		}
+	case CateAudioBook, CateEbook:
+		for _, course := range list.List {
+			idMap[course.ID] = GetCourseIDMap(&course)
+		}
+	}
+
+	config.Instance.SetIDMap(category, idMap)
+	return
+}
+
 // CourseList 已购课程列表
-func CourseList(category string) (list *services.CourseList, err error) {
+func CourseListAll(category string) (list *services.CourseList, err error) {
 	list, err = getService().CourseListAll(category, "study")
 	idMap := make(config.CourseIDMap, len(list.List))
 	switch category {

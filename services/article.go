@@ -172,110 +172,50 @@ type ArticleCommentList struct {
 
 // ArticleComment 文章留言
 type ArticleComment struct {
-	NoteId            int    `json:"note_id"`
-	NoteIdStr         string `json:"note_id_str"`
-	NoteIdHazy        string `json:"note_id_hazy"`
-	OriginContentType int    `json:"origin_content_type"`
-	OriginNoteIdStr   string `json:"origin_note_id_str"`
-	OriginNoteIdHazy  string `json:"origin_note_id_hazy"`
-	RootContentType   int    `json:"root_content_type"`
-	RootNoteId        int    `json:"root_note_id"`
-	RootNoteIdStr     string `json:"root_note_id_str"`
-	RootNoteIdHazy    string `json:"root_note_id_hazy"`
-	Uid               int    `json:"uid"`
-	UidHazy           string `json:"uid_hazy"`
-	IsFromMe          int    `json:"is_from_me"`
-	NotesOwner        struct {
-		Id         string `json:"id"`
-		Uid        int    `json:"uid"`
-		Name       string `json:"name"`
-		Avatar     string `json:"avatar"`
-		Follow     int    `json:"follow"`
-		IsV        int    `json:"isV"`
-		Slogan     string `json:"slogan"`
-		Vinfo      string `json:"Vinfo"`
-		StudentId  int    `json:"student_id"`
-		IsPoster   bool   `json:"is_poster"`
-		Qrcode     string `json:"qrcode"`
-		LogType    string `json:"log_type"`
-		UidHazy    string `json:"uid_hazy"`
-		NoteIdHazy string `json:"note_id_hazy"`
-	} `json:"notes_owner"`
-	OriginNotesOwner struct {
-		Id         string `json:"id"`
-		Uid        int    `json:"uid"`
-		Name       string `json:"name"`
-		Avatar     string `json:"avatar"`
-		Follow     int    `json:"follow"`
-		IsV        int    `json:"isV"`
-		Slogan     string `json:"slogan"`
-		Vinfo      string `json:"Vinfo"`
-		StudentId  int    `json:"student_id"`
-		IsPoster   bool   `json:"is_poster"`
-		Qrcode     string `json:"qrcode"`
-		UidHazy    string `json:"uid_hazy"`
-		NoteIdHazy string `json:"note_id_hazy"`
-	} `json:"origin_notes_owner"`
-	RootNotesOwner struct {
-		Id         string `json:"id"`
-		Uid        int    `json:"uid"`
-		Name       string `json:"name"`
-		Avatar     string `json:"avatar"`
-		Follow     int    `json:"follow"`
-		IsV        int    `json:"isV"`
-		Slogan     string `json:"slogan"`
-		Vinfo      string `json:"Vinfo"`
-		StudentId  int    `json:"student_id"`
-		IsPoster   bool   `json:"is_poster"`
-		Qrcode     string `json:"qrcode"`
-		UidHazy    string `json:"uid_hazy"`
-		NoteIdHazy string `json:"note_id_hazy"`
-	} `json:"root_notes_owner"`
-	NoteType         int    `json:"note_type"`
-	SourceType       int    `json:"source_type"`
-	DetailId         int    `json:"detail_id"`
-	Class            int    `json:"class"`
-	ContentType      int    `json:"content_type"`
-	State            int    `json:"state"`
-	CurrentState     int    `json:"current_state"`
-	AuditState       int    `json:"audit_state"`
-	OriginState      int    `json:"origin_state"`
-	OriginAuditState int    `json:"origin_audit_state"`
-	RootState        int    `json:"root_state"`
-	RootAuditState   int    `json:"root_audit_state"`
-	Note             string `json:"note"`
-	Content          string `json:"content"`
-	NoteTitle        string `json:"note_title"`
-	NoteLine         string `json:"note_line"`
-	NoteLineStyle    string `json:"note_line_style"`
-	CommentReplyTime int    `json:"comment_reply_time"`
-	CommentReply     string `json:"comment_reply"`
-	CommentIdStr     string `json:"comment_id_str"`
-	CommentReplyUser struct {
-		Id         string `json:"id"`
-		Uid        int    `json:"uid"`
-		Name       string `json:"name"`
-		Avatar     string `json:"avatar"`
-		Follow     int    `json:"follow"`
-		IsV        int    `json:"isV"`
-		Slogan     string `json:"slogan"`
-		Vinfo      string `json:"Vinfo"`
-		StudentId  int    `json:"student_id"`
-		IsPoster   bool   `json:"is_poster"`
-		Qrcode     string `json:"qrcode"`
-		LogId      string `json:"log_id"`
-		LogType    string `json:"log_type"`
-		UidHazy    string `json:"uid_hazy"`
-		NoteIdHazy string `json:"note_id_hazy"`
-		Role       string `json:"role"`
-	} `json:"comment_reply_user"`
-	RepostCommentNoteIdStr  string `json:"repost_comment_note_id_str"`
-	RepostCommentNoteIdHazy string `json:"repost_comment_note_id_hazy"`
-	RefId                   int    `json:"ref_id"`
-	CreateTime              int    `json:"create_time"`
-	UpdateTime              int    `json:"update_time"`
-	Ptype                   int    `json:"ptype"`
-	PidHazy                 string `json:"pid_hazy"`
+	NoteId                  int       `json:"note_id"`
+	NoteIdStr               string    `json:"note_id_str"`
+	NoteIdHazy              string    `json:"note_id_hazy"`
+	OriginContentType       int       `json:"origin_content_type"`
+	OriginNoteIdStr         string    `json:"origin_note_id_str"`
+	OriginNoteIdHazy        string    `json:"origin_note_id_hazy"`
+	RootContentType         int       `json:"root_content_type"`
+	RootNoteId              int       `json:"root_note_id"`
+	RootNoteIdStr           string    `json:"root_note_id_str"`
+	RootNoteIdHazy          string    `json:"root_note_id_hazy"`
+	Uid                     int       `json:"uid"`
+	UidHazy                 string    `json:"uid_hazy"`
+	IsFromMe                int       `json:"is_from_me"`
+	NotesOwner              NotesUser `json:"notes_owner"`
+	OriginNotesOwner        NotesUser `json:"origin_notes_owner"`
+	RootNotesOwner          NotesUser `json:"root_notes_owner"`
+	NoteType                int       `json:"note_type"`
+	SourceType              int       `json:"source_type"`
+	DetailId                int       `json:"detail_id"`
+	Class                   int       `json:"class"`
+	ContentType             int       `json:"content_type"`
+	State                   int       `json:"state"`
+	CurrentState            int       `json:"current_state"`
+	AuditState              int       `json:"audit_state"`
+	OriginState             int       `json:"origin_state"`
+	OriginAuditState        int       `json:"origin_audit_state"`
+	RootState               int       `json:"root_state"`
+	RootAuditState          int       `json:"root_audit_state"`
+	Note                    string    `json:"note"`
+	Content                 string    `json:"content"`
+	NoteTitle               string    `json:"note_title"`
+	NoteLine                string    `json:"note_line"`
+	NoteLineStyle           string    `json:"note_line_style"`
+	CommentReplyTime        int       `json:"comment_reply_time"`
+	CommentReply            string    `json:"comment_reply"`
+	CommentIdStr            string    `json:"comment_id_str"`
+	CommentReplyUser        NotesUser `json:"comment_reply_user"`
+	RepostCommentNoteIdStr  string    `json:"repost_comment_note_id_str"`
+	RepostCommentNoteIdHazy string    `json:"repost_comment_note_id_hazy"`
+	RefId                   int       `json:"ref_id"`
+	CreateTime              int       `json:"create_time"`
+	UpdateTime              int       `json:"update_time"`
+	Ptype                   int       `json:"ptype"`
+	PidHazy                 string    `json:"pid_hazy"`
 	Lesson                  struct {
 		Ptype   int    `json:"ptype"`
 		PidHazy string `json:"pid_hazy"`
@@ -346,6 +286,25 @@ type ArticleComment struct {
 	LevelPermission bool          `json:"level_permission"`
 	Highlights      []interface{} `json:"highlights"`
 	RootHighlights  []interface{} `json:"root_highlights"`
+}
+
+type NotesUser struct {
+	Id         string `json:"id"`
+	Uid        int    `json:"uid"`
+	Name       string `json:"name"`
+	Avatar     string `json:"avatar"`
+	Follow     int    `json:"follow"`
+	IsV        int    `json:"isV"`
+	Slogan     string `json:"slogan"`
+	Vinfo      string `json:"Vinfo"`
+	StudentId  int    `json:"student_id"`
+	IsPoster   bool   `json:"is_poster"`
+	Qrcode     string `json:"qrcode"`
+	LogId      string `json:"log_id"`
+	LogType    string `json:"log_type"`
+	UidHazy    string `json:"uid_hazy"`
+	NoteIdHazy string `json:"note_id_hazy"`
+	Role       string `json:"role"`
 }
 
 // ArticleList get class article list
