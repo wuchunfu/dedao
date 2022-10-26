@@ -121,11 +121,11 @@ func (s *Service) reqCourseInfo(ID string) (io.ReadCloser, error) {
 
 // reqArticleList 请求文章列表
 // chapterID = "" 获取所有的文章列表，否则只获取该章节的文章列表
-func (s *Service) reqArticleList(ID, chapterID string, maxID int) (io.ReadCloser, error) {
+func (s *Service) reqArticleList(ID, chapterID string, count, maxID int) (io.ReadCloser, error) {
 	resp, err := s.client.R().
 		SetBody(map[string]interface{}{
 			"chapter_id":      chapterID,
-			"count":           30,
+			"count":           count,
 			"detail_id":       ID,
 			"include_edge":    false,
 			"is_unlearn":      false,

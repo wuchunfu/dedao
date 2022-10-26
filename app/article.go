@@ -9,19 +9,30 @@ import (
 	"github.com/yann0917/dedao/utils"
 )
 
+// // ArticleList 已购课程文章列表分页
+func ArticleList(enid, chapterID string, count, maxID int) (list *services.ArticleList, err error) {
+
+	list, err = getService().ArticleList(enid, chapterID, count, maxID)
+	if err != nil {
+		return
+	}
+	return
+}
+
 // ArticleList 已购课程文章列表
-func ArticleList(id int, chapterID string) (list *services.ArticleList, err error) {
+func ArticleListAll(id int, chapterID string) (list *services.ArticleList, err error) {
 	info, err := CourseDetail(CateCourse, id)
 	if err != nil {
 		return
 	}
+	pageSize := 30
 	enid := info["enid"].(string)
-	count := info["publish_num"].(float64)
-	page := int(math.Ceil(float64(count) / 30.0))
+	count := info["publish_num"].(int)
+	page := int(math.Ceil(float64(count) / float64(pageSize)))
 	maxID := 0
 	var lists []services.ArticleIntro
 	for i := 0; i < page; i++ {
-		list, err = getService().ArticleList(enid, chapterID, maxID)
+		list, err = getService().ArticleList(enid, chapterID, pageSize, maxID)
 		if err != nil {
 			return
 		}
@@ -36,7 +47,7 @@ func ArticleList(id int, chapterID string) (list *services.ArticleList, err erro
 // ArticleInfo article info
 // get article token, audio token, media security token etc
 func ArticleInfo(id, aid int) (info *services.ArticleInfo, aEnid string, err error) {
-	list, err := ArticleList(id, "")
+	list, err := ArticleListAll(id, "")
 	if err != nil {
 		return
 	}
@@ -104,6 +115,25 @@ func OdobArticleInfo(aEnid string) (info *services.ArticleInfo, err error) {
 // OdobArticleDetail odob article detail
 func OdobArticleDetail(aEnid string) (detail *services.ArticleDetail, err error) {
 	info, err := OdobArticleInfo(aEnid)
+	if err != nil {
+		return
+	}
+
+	token := info.DdArticleToken
+	appid := "1632426125495894021"
+	detail, err = getService().ArticleDetail(token, aEnid, appid)
+	if err != nil {
+		fmt.Printf("err:%#v\n", err)
+		return
+	}
+	return
+
+}
+
+// OdobArticleDetail odob article detail
+// enid article enid  or odob audioAliasID, aType 1-course article, 2-odob article
+func ArticleDetailByEnid(aType int, aEnid string) (detail *services.ArticleDetail, err error) {
+	info, err := getService().ArticleInfo(aEnid, aType)
 	if err != nil {
 		return
 	}

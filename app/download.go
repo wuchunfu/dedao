@@ -43,7 +43,7 @@ func (d *CourseDownload) Download() error {
 	if err != nil {
 		return err
 	}
-	articles, err := ArticleList(d.ID, "")
+	articles, err := ArticleListAll(d.ID, "")
 	if err != nil {
 		return err
 	}
@@ -436,7 +436,8 @@ func ContentsToMarkdown(contents []services.Content) (res string) {
 				res += "\r\n\r\n"
 			}
 		case "elite": // 划重点
-			res += getMdHeader(2) + "划重点\r\n\r\n" + content.Text + "\r\n\r\n"
+			temp := strings.ReplaceAll(content.Text, "\n", "\r\n\r\n")
+			res += getMdHeader(2) + "划重点\r\n\r\n" + temp + "\r\n\r\n"
 
 		case "image":
 			res += "![" + content.URL + "](" + content.URL + ")" + "\r\n\r\n"
@@ -479,7 +480,7 @@ func getMdHeader(level int) string {
 func DownloadMarkdown(cType string, id, aid int, path string) error {
 	switch cType {
 	case CateCourse:
-		list, err := ArticleList(id, "")
+		list, err := ArticleListAll(id, "")
 		if err != nil {
 			return err
 		}

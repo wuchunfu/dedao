@@ -20,6 +20,13 @@ func EbookDetail(id int) (detail *services.EbookDetail, err error) {
 	return
 }
 
+func EbookDetailByEnid(enID string) (detail *services.EbookDetail, err error) {
+
+	detail, err = getService().EbookDetail(enID)
+
+	return
+}
+
 func EbookInfo(enID string) (info *services.EbookInfo, err error) {
 	token, err1 := getService().EbookReadToken(enID)
 	if err1 != nil {

@@ -13,6 +13,9 @@ func CourseType() (list *services.CourseCategoryList, err error) {
 
 func CourseList(category, order string, page, limit int) (list *services.CourseList, err error) {
 	list, err = getService().CourseList(category, order, page, limit)
+	if err != nil {
+		return
+	}
 	idMap := make(config.CourseIDMap, len(list.List))
 	switch category {
 	case CateCourse:
@@ -32,6 +35,9 @@ func CourseList(category, order string, page, limit int) (list *services.CourseL
 // CourseList 已购课程列表
 func CourseListAll(category string) (list *services.CourseList, err error) {
 	list, err = getService().CourseListAll(category, "study")
+	if err != nil {
+		return
+	}
 	idMap := make(config.CourseIDMap, len(list.List))
 	switch category {
 	case CateCourse:
@@ -99,4 +105,13 @@ func GetCourseIDMap(course *services.Course) map[string]interface{} {
 		"audio_size":         course.AudioDetail.Size,
 		"audio_mp3_play_url": course.AudioDetail.Mp3PlayURL,
 	}
+}
+
+// CourseInfo 已购课程列表
+func CourseInfoByEnid(enID string) (info *services.CourseInfo, err error) {
+	info, err = getService().CourseInfo(enID)
+	if err != nil {
+		return
+	}
+	return
 }

@@ -107,6 +107,32 @@ func (s *Service) User() (user *User, err error) {
 	return
 }
 
+// EbookUserInfo get ebook vip info
+func (s *Service) EbookUserInfo() (info *EbookVIPInfo, err error) {
+	body, err := s.reqEbookVIPInfo()
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &info); err != nil {
+		return
+	}
+	return
+}
+
+// OdobVIPInfo get odob vip info
+func (s *Service) OdobUserInfo() (info *OdobVip, err error) {
+	body, err := s.reqOdobVIPInfo()
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &info); err != nil {
+		return
+	}
+	return
+}
+
 // Token token
 type Token struct {
 	Token string `json:"token"`

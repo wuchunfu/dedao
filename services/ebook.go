@@ -179,19 +179,6 @@ func (s *Service) EbookInfo(token string) (info *EbookInfo, err error) {
 	return
 }
 
-// EbookVIPInfo get ebook vip info
-func (s *Service) EbookVIPInfo() (info *EbookVIPInfo, err error) {
-	body, err := s.reqEbookVIPInfo()
-	if err != nil {
-		return
-	}
-	defer body.Close()
-	if err = handleJSONParse(body, &info); err != nil {
-		return
-	}
-	return
-}
-
 func (s *Service) EbookPages(chapterID, token string, index, count, offset int) (pages *EbookPage, err error) {
 	body, err := s.reqEbookPages(chapterID, token, index, count, offset)
 	if err != nil {
