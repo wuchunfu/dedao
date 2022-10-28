@@ -86,6 +86,49 @@ type CourseInfo struct {
 	UserType               string        `json:"user_type"`
 	HasMoreFlatArticleList bool          `json:"has_more_flat_article_list"`
 	IsShowGrading          bool          `json:"is_show_grading"`
+
+	ClassVideo           interface{}          `json:"class_video"`
+	LiveInfo             interface{}          `json:"live_info"`
+	TimeNow              int                  `json:"time_now"`
+	ClassReviewsCount    int                  `json:"class_reviews_count"`
+	ClassReviews         ClassReviews         `json:"class_reviews"`
+	AchievementDetail    interface{}          `json:"achievement_detail"`
+	ClassCommentInfo     ClassCommentInfo     `json:"class_comment_info"`
+	LiveInnerArticleInfo LiveInnerArticleInfo `json:"live_inner_article_info"`
+}
+
+type ClassReviews struct {
+	ShowText    string `json:"show_text"`
+	ReviewDone  bool   `json:"review_done"`
+	IsSatisfied bool   `json:"is_satisfied"`
+	Detail      string `json:"detail"`
+}
+
+type ClassCommentInfo struct {
+	CommentList  []ClassComment `json:"comment_list"`
+	Count        int            `json:"count"`
+	AverageScore string         `json:"average_score"`
+}
+
+type ClassComment struct {
+	ID             int    `json:"id"`
+	UserID         int    `json:"user_id"`
+	Title          string `json:"title"`
+	Score          int    `json:"score"`
+	Content        string `json:"content"`
+	NoStyleContent string `json:"no_style_content"`
+	NoteID         string `json:"note_id"`
+	Nickname       string `json:"nickname"`
+	Avatar         string `json:"avatar"`
+	AvatarS        string `json:"avatar_s"`
+	TrackInfo      string `json:"track_info"`
+}
+
+type LiveInnerArticleInfo struct {
+	ArticleID    int    `json:"article_id"`
+	ArticleTitle string `json:"article_title"`
+	LogType      string `json:"log_type"`
+	LogID        string `json:"log_id"`
 }
 
 // ClassInfo class info
@@ -137,6 +180,7 @@ type ClassInfo struct {
 	ViewType              int        `json:"view_type"`
 	H5URLName             string     `json:"h5_url_name"`
 	PackageManagerSwitch  bool       `json:"package_manager_switch"`
+	PackageManager        bool       `json:"package_manager"`
 	LectureAvatorSpecial  string     `json:"lecture_avator_special"`
 	MiniShareImg          string     `json:"mini_share_img"`
 	EstimatedShelfTime    int        `json:"estimated_shelf_time"`
@@ -166,6 +210,8 @@ type ClassInfo struct {
 	PreferentialEndTime   int        `json:"preferential_end_time"`
 	EarlyBirdPrice        int        `json:"early_bird_price"`
 	TrialCount            int        `json:"trial_count"`
+	SpecialLogo           string     `json:"special_logo"`
+	EarlyBirdMsg          string     `json:"early_bird_msg"`
 }
 
 type Collection struct {

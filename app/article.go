@@ -9,9 +9,8 @@ import (
 	"github.com/yann0917/dedao/utils"
 )
 
-// // ArticleList 已购课程文章列表分页
+// ArticleList 已购课程文章列表分页
 func ArticleList(enid, chapterID string, count, maxID int) (list *services.ArticleList, err error) {
-
 	list, err = getService().ArticleList(enid, chapterID, count, maxID)
 	if err != nil {
 		return
@@ -19,7 +18,7 @@ func ArticleList(enid, chapterID string, count, maxID int) (list *services.Artic
 	return
 }
 
-// ArticleList 已购课程文章列表
+// ArticleListAll 已购课程文章列表
 func ArticleListAll(id int, chapterID string) (list *services.ArticleList, err error) {
 	info, err := CourseDetail(CateCourse, id)
 	if err != nil {
@@ -130,7 +129,7 @@ func OdobArticleDetail(aEnid string) (detail *services.ArticleDetail, err error)
 
 }
 
-// OdobArticleDetail odob article detail
+// ArticleDetailByEnid odob article detail
 // enid article enid  or odob audioAliasID, aType 1-course article, 2-odob article
 func ArticleDetailByEnid(aType int, aEnid string) (detail *services.ArticleDetail, err error) {
 	info, err := getService().ArticleInfo(aEnid, aType)

@@ -120,7 +120,7 @@ func (s *Service) EbookUserInfo() (info *EbookVIPInfo, err error) {
 	return
 }
 
-// OdobVIPInfo get odob vip info
+// OdobUserInfo get odob vip info
 func (s *Service) OdobUserInfo() (info *OdobVip, err error) {
 	body, err := s.reqOdobVIPInfo()
 	if err != nil {

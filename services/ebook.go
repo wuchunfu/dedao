@@ -1,7 +1,7 @@
 package services
 
-// Catelog ebook catalog
-type Catelog struct {
+// Catalog ebook catalog
+type Catalog struct {
 	Level     int    `json:"level"`
 	Text      string `json:"text"`
 	Href      string `json:"href"`
@@ -29,7 +29,7 @@ type EbookDetail struct {
 	AuthorInfo          string        `json:"author_info"`
 	BookAuthor          string        `json:"book_author"`
 	PublishTime         string        `json:"publish_time"`
-	CatalogList         []Catelog     `json:"catalog_list"`
+	CatalogList         []Catalog     `json:"catalog_list"`
 	BookIntro           string        `json:"book_intro"`
 	BSpecialPrice       string        `json:"b_special_price"`
 	CurrentPrice        string        `json:"current_price"`
@@ -113,29 +113,63 @@ type EbookInfo struct {
 
 // EbookVIPInfo ebook vip info
 type EbookVIPInfo struct {
-	UID                int    `json:"uid"`
-	Nickname           string `json:"nickname"`
-	Slogan             string `json:"slogan"`
-	Avatar             string `json:"avatar"`
-	AvatarS            string `json:"avatar_s"`
-	MonthCount         int    `json:"month_count"`
-	TotalCount         int    `json:"total_count"`
-	FinishedCount      int    `json:"finished_count"`
-	SavePrice          string `json:"save_price"`
-	IsVip              bool   `json:"is_vip"`
-	BeginTime          int    `json:"begin_time"`
-	EndTime            int    `json:"end_time"`
-	EnterpriseEndTime  int    `json:"enterprise_end_time"`
-	ExpireTime         int    `json:"expire_time"`
-	SurplusTime        int    `json:"surplus_time"`
-	IsExpire           bool   `json:"is_expire"`
-	CardID             int    `json:"card_id"`
-	CardType           int    `json:"card_type"`
-	PriceDesc          string `json:"price_desc"`
-	IsBuyMonthDiscount bool   `json:"is_buy_month_discount"`
-	MonthDiscountPrice int    `json:"month_discount_price"`
-	DdURL              string `json:"dd_url"`
-	ErrTips            string `json:"err_tips"`
+	UID                int           `json:"uid"`
+	Nickname           string        `json:"nickname"`
+	Slogan             string        `json:"slogan"`
+	Avatar             string        `json:"avatar"`
+	AvatarS            string        `json:"avatar_s"`
+	MonthCount         int           `json:"month_count"`
+	TotalCount         int           `json:"total_count"`
+	WeekCount          int           `json:"week_count"`
+	FinishedCount      int           `json:"finished_count"`
+	SavePrice          string        `json:"save_price"`
+	IsVip              bool          `json:"is_vip"`
+	BeginTime          int           `json:"begin_time"`
+	EndTime            int           `json:"end_time"`
+	EnterpriseEndTime  int           `json:"enterprise_end_time"`
+	ExpireTime         int           `json:"expire_time"`
+	SurplusTime        int           `json:"surplus_time"`
+	IsExpire           bool          `json:"is_expire"`
+	CardID             int           `json:"card_id"`
+	CardType           int           `json:"card_type"`
+	PriceDesc          string        `json:"price_desc"`
+	IsBuyMonthDiscount bool          `json:"is_buy_month_discount"`
+	MonthDiscountPrice int           `json:"month_discount_price"`
+	DdURL              string        `json:"dd_url"`
+	ErrTips            string        `json:"err_tips"`
+	VStateValue        int           `json:"v_state_value"`
+	UpgradeTips        []interface{} `json:"upgrade_tips"`
+}
+
+type EbookCommentList struct {
+	EbookScore EbookScore `json:"ebook_score"`
+	SelfInfo   SelfInfo   `json:"self_info"`
+	List       []Comment  `json:"list"`
+	Total      int        `json:"total"`
+	Book       Book       `json:"book"`
+}
+
+type SelfInfo struct {
+	Score      int `json:"score"`
+	AuditState int `json:"audit_state"`
+}
+
+type Book struct {
+	BookType int `json:"book_type"`
+}
+
+type EbookScore struct {
+	Id           int      `json:"id"`
+	Pid          int      `json:"pid"`
+	Ptype        int      `json:"ptype"`
+	Isbn         string   `json:"isbn"`
+	AverageScore string   `json:"average_score"`
+	ScoreInfo    []string `json:"score_info"`
+	CreateTime   string   `json:"create_time"`
+	UpdateTime   string   `json:"update_time"`
+	Total        string   `json:"total"`
+	Status       int      `json:"status"`
+	BookStatus   int      `json:"book_status"`
 }
 
 // EbookDetail get ebook detail
@@ -186,6 +220,21 @@ func (s *Service) EbookPages(chapterID, token string, index, count, offset int) 
 	}
 	defer body.Close()
 	if err = handleJSONParse(body, &pages); err != nil {
+		return
+	}
+	return
+}
+
+// EbookCommentList get ebook comment list
+// sort like_count
+func (s *Service) EbookCommentList(id, sort string, page, limit int) (list *EbookCommentList, err error) {
+
+	body, err := s.reqEbookCommentList(id, sort, page, limit)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &list); err != nil {
 		return
 	}
 	return

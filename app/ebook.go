@@ -21,9 +21,14 @@ func EbookDetail(id int) (detail *services.EbookDetail, err error) {
 }
 
 func EbookDetailByEnid(enID string) (detail *services.EbookDetail, err error) {
-
 	detail, err = getService().EbookDetail(enID)
+	return
+}
 
+// EbookCommentList get ebook 评分&书评
+// sort like_count
+func EbookCommentList(enID, sort string, page, limit int) (list *services.EbookCommentList, err error) {
+	list, err = getService().EbookCommentList(enID, sort, page, limit)
 	return
 }
 

@@ -450,7 +450,7 @@ func ContentsToMarkdown(contents []services.Content) (res string) {
 	return
 }
 
-func articleCommentsToMarkdown(contents []services.ArticleComment) (res string) {
+func articleCommentsToMarkdown(contents []services.Comment) (res string) {
 	res = getMdHeader(2) + "热门留言\r\n\r\n"
 	for _, content := range contents {
 		res += content.NotesOwner.Name + "：" + content.Note + "\r\n\r\n"

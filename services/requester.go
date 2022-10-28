@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 )
 
 // reqGetLoginAccessToken 扫码请求token
@@ -269,6 +270,21 @@ func (s *Service) reqEbookVIPInfo() (io.ReadCloser, error) {
 	return handleHTTPResponse(resp, err)
 }
 
+// reqEbookCommentList 请求电子评分及书评列表
+// sort like_count
+func (s *Service) reqEbookCommentList(enid, sort string, page, limit int) (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"enid":      enid,
+			"page":      page,
+			"page_size": limit,
+			"sort":      sort,
+			"ptype":     2,
+		}).
+		Post("/pc/ebook2/v1/comment/list")
+	return handleHTTPResponse(resp, err)
+}
+
 // reqOdobVIPInfo 请求每天听本书书 vip info
 func (s *Service) reqOdobVIPInfo() (io.ReadCloser, error) {
 	resp, err := s.client.R().
@@ -310,5 +326,28 @@ func (s *Service) reqTopicNotesList(topicID string) (io.ReadCloser, error) {
 			"version":       2,
 			"topic_id_hazy": topicID,
 		}).Post("/pc/ledgers/topic/notes/list")
+	return handleHTTPResponse(resp, err)
+}
+
+func (s *Service) reqTimeReport(data interface{}) (io.ReadCloser, error) {
+	// data
+	// [{
+	// 	"resource": {
+	// 		"product_type": 8888
+	// 	},
+	// 	"time": {
+	// 		"model": 1,
+	// 		"speed": 1,
+	// 		"scope": "1666832665-1666832669,1666832726-1666832785",
+	// 		"extra": "active"
+	// 		}
+	// }]
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"data":      data,
+			"os":        "H5",
+			"platform":  6,
+			"send_time": time.Now().UnixMilli(),
+		}).Post("/prime/v1/producer/time/report")
 	return handleHTTPResponse(resp, err)
 }
