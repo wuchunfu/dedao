@@ -351,3 +351,19 @@ func (s *Service) reqTimeReport(data interface{}) (io.ReadCloser, error) {
 		}).Post("/prime/v1/producer/time/report")
 	return handleHTTPResponse(resp, err)
 }
+
+func (s *Service) reqVolc(mediaID, securityToken string) (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"media_id_str":   mediaID,
+			"security_token": securityToken,
+		}).Post("/media_gate/gate/api/v1/volc")
+	return handleHTTPResponse(resp, err)
+}
+
+func (s *Service) reqVolcGetPlayInfo(query string) (io.ReadCloser, error) {
+	resp, err := s.client.SetBaseURL("https://vod.volcengineapi.com").R().
+		SetQueryString("Action=GetPlayInfo&Version=2020-08-01&" + query).
+		Get("")
+	return handleHTTPResponse(resp, err)
+}

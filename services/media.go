@@ -1,5 +1,9 @@
 package services
 
+import (
+	"time"
+)
+
 // MediaBaseInfo media info
 type MediaBaseInfo struct {
 	MediaType     int    `json:"media_type"` // 1-audio,2-video
@@ -79,6 +83,103 @@ type AudioList struct {
 	List []Audio `json:"list"`
 }
 
+type MediaVolc struct {
+	MediaAliasId string       `json:"media_alias_id"`
+	LastModify   time.Time    `json:"last_modify"`
+	VersionId    int          `json:"version_id"`
+	Tracks       []VideoTrack `json:"tracks"`
+}
+
+type VideoTrack struct {
+	TrackId      int          `json:"track_id"`
+	TrackType    int          `json:"track_type"`
+	TrackTypeTag string       `json:"track_type_tag"`
+	Duration     int          `json:"duration"`
+	Formats      []VolcFormat `json:"formats"`
+}
+
+type VolcFormat struct {
+	Type              string `json:"type"`
+	Format            string `json:"format"`
+	VolcId            string `json:"volc_id"`
+	VolcPlayAuthToken string `json:"volc_play_auth_token"`
+	VolcKeyToken      string `json:"volc_key_token"`
+}
+
+// VodPlayInfoResp 获取播放地址
+// https://www.volcengine.com/docs/4/2918#vodplayinfomodel
+type VodPlayInfoResp struct {
+	ResponseMetadata VodRespMetadata  `json:"ResponseMetadata"`
+	Result           VodPlayInfoModel `json:"Result"`
+}
+
+type VodRespMetadata struct {
+	RequestId string `json:"RequestId"`
+	Action    string `json:"Action"`
+	Version   string `json:"Version"`
+	Service   string `json:"Service"`
+	Region    string `json:"Region"`
+}
+
+type VodPlayInfoModel struct {
+	Version          int             `json:"Version"`
+	Vid              string          `json:"Vid"`
+	Status           int             `json:"Status"`
+	PosterUrl        string          `json:"PosterUrl"`
+	Duration         float64         `json:"Duration"`
+	FileType         string          `json:"FileType"`
+	EnableAdaptive   bool            `json:"EnableAdaptive"`
+	TotalCount       int             `json:"TotalCount"`
+	AdaptiveInfo     VodAdaptiveInfo `json:"AdaptiveInfo"`
+	PlayInfoList     []VodPlayInfo   `json:"PlayInfoList"`
+	ThumbInfoList    []VodThumbInfo  `json:"ThumbInfoList"`
+	BarrageMaskUrl   string          `json:"BarrageMaskUrl"`
+	SubtitleInfoList []interface{}   `json:"SubtitleInfoList"`
+}
+
+type VodAdaptiveInfo struct {
+	MainPlayUrl   string `json:"MainPlayUrl"`
+	BackupPlayUrl string `json:"BackupPlayUrl"`
+	AdaptiveType  string `json:"AdaptiveType"`
+}
+
+type VodPlayInfo struct {
+	FileId            string      `json:"FileId"`
+	Md5               string      `json:"Md5"`
+	FileType          string      `json:"FileType"`
+	Format            string      `json:"Format"`
+	Codec             string      `json:"Codec"`
+	Definition        string      `json:"Definition"`
+	MainPlayUrl       string      `json:"MainPlayUrl"`
+	BackupPlayUrl     string      `json:"BackupPlayUrl"`
+	Bitrate           int         `json:"Bitrate"`
+	Width             int         `json:"Width"`
+	Height            int         `json:"Height"`
+	Size              int         `json:"Size"`
+	CheckInfo         string      `json:"CheckInfo"`
+	IndexRange        string      `json:"IndexRange"`
+	InitRange         string      `json:"InitRange"`
+	PlayAuth          string      `json:"PlayAuth"`
+	PlayAuthId        string      `json:"PlayAuthId"`
+	LogoType          string      `json:"LogoType"`
+	Quality           string      `json:"Quality"`
+	BarrageMaskOffset string      `json:"BarrageMaskOffset"`
+	Duration          float64     `json:"Duration"`
+	KeyFrameAlignment string      `json:"KeyFrameAlignment"`
+	Volume            interface{} `json:"Volume"`
+}
+
+type VodThumbInfo struct {
+	CaptureNum int      `json:"CaptureNum"`
+	StoreUrls  []string `json:"StoreUrls"`
+	CellWidth  int      `json:"CellWidth"`
+	CellHeight int      `json:"CellHeight"`
+	ImgXLen    int      `json:"ImgXLen"`
+	ImgYLen    int      `json:"ImgYLen"`
+	Interval   float64  `json:"Interval"`
+	Format     string   `json:"Format"`
+}
+
 // AudioByAlias get article audio info
 func (s *Service) AudioByAlias(ID string) (list *AudioList, err error) {
 	body, err := s.reqAudioByAlias(ID)
@@ -87,6 +188,32 @@ func (s *Service) AudioByAlias(ID string) (list *AudioList, err error) {
 	}
 	defer body.Close()
 	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+// GetVolcPlayAuthToken  get 火山引擎点播 Vid+PlayAuthToken
+func (s *Service) GetVolcPlayAuthToken(mediaIDStr, securityToken string) (info *MediaVolc, err error) {
+	body, err := s.reqVolc(mediaIDStr, securityToken)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &info); err != nil {
+		return
+	}
+	return
+}
+
+// GetVolcPlayInfo  火山引擎点播
+func (s *Service) GetVolcPlayInfo(query string) (info *VodPlayInfoResp, err error) {
+	body, err := s.reqVolcGetPlayInfo(query)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &info); err != nil {
 		return
 	}
 	return
