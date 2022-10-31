@@ -5,6 +5,8 @@ import (
 	"io"
 	"strings"
 	"time"
+
+	"github.com/go-resty/resty/v2"
 )
 
 // reqGetLoginAccessToken 扫码请求token
@@ -28,8 +30,8 @@ func (s *Service) reqGetLoginAccessToken() (string, error) {
 
 	resp, err := s.client.R().
 		SetHeader("Accept", "application/json, text/plain, */*").
-		SetHeader("Xi-Csrf-Token", csrfToken).
-		SetHeader("Xi-DT", "web").
+		SetHeaderVerbatim("Xi-Csrf-Token", csrfToken).
+		SetHeaderVerbatim("Xi-DT", "web").
 		Post("/loginapi/getAccessToken")
 	if err != nil {
 		fmt.Printf("%#v\n", err.Error())
@@ -43,7 +45,7 @@ func (s *Service) reqGetLoginAccessToken() (string, error) {
 // token: X-Oauth-Access-Token from /loginapi/getAccessToken
 func (s *Service) reqGetQrcode(token string) (qr *QrCodeResp, err error) {
 	_, err = s.client.R().
-		SetHeader("X-Oauth-Access-Token", token).
+		SetHeaderVerbatim("X-Oauth-Access-Token", token).
 		SetResult(&qr).
 		Get("/oauth/api/embedded/qrcode")
 	if err != nil {
@@ -58,7 +60,7 @@ func (s *Service) reqGetQrcode(token string) (qr *QrCodeResp, err error) {
 // qrCode: qrCodeString from /oauth/api/embedded/qrcode
 func (s *Service) reqCheckLogin(token, qrCode string) (check *CheckLoginResp, cookie string, err error) {
 	resp, err := s.client.R().
-		SetHeader("X-Oauth-Access-Token", token).
+		SetHeaderVerbatim("X-Oauth-Access-Token", token).
 		SetBody(map[string]interface{}{
 			"keepLogin": true,
 			"pname":     "igetoauthpc",
@@ -329,6 +331,39 @@ func (s *Service) reqTopicNotesList(topicID string) (io.ReadCloser, error) {
 	return handleHTTPResponse(resp, err)
 }
 
+func (s *Service) reqLiveTabList() (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		Post("/api/pc/ddlive/v2/pc/home/live/tablist")
+	return handleHTTPResponse(resp, err)
+}
+
+func (s *Service) reqLiveList(liveType, page, limit int) (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"live_type": liveType,
+			"page":      page,
+			"page_size": limit,
+		}).Post("/api/pc/ddlive/v2/pc/home/live/list")
+	return handleHTTPResponse(resp, err)
+}
+
+func (s *Service) reqLiveCheck(aliasID, inviteCode string) (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"alias_id":    aliasID,
+			"invite_code": inviteCode,
+		}).Post("/api/pc/ddlive/v2/pc/live/check")
+	return handleHTTPResponse(resp, err)
+}
+
+func (s *Service) reqLiveBase(aliasID string) (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"alias_id": aliasID,
+		}).Post("/pc/ddlive/v2/pc/live/base")
+	return handleHTTPResponse(resp, err)
+}
+
 func (s *Service) reqTimeReport(data interface{}) (io.ReadCloser, error) {
 	// data
 	// [{
@@ -362,7 +397,14 @@ func (s *Service) reqVolc(mediaID, securityToken string) (io.ReadCloser, error) 
 }
 
 func (s *Service) reqVolcGetPlayInfo(query string) (io.ReadCloser, error) {
-	resp, err := s.client.SetBaseURL("https://vod.volcengineapi.com").R().
+	cookies := s.client.Cookies
+	client := resty.New()
+	client.SetCookies(cookies).
+		SetHeaderVerbatim("User-Agent", UserAgent).
+		SetHeaderVerbatim("Xi-DT", "web")
+	client.SetBaseURL("https://vod.volcengineapi.com")
+	resp, err := client.
+		R().
 		SetQueryString("Action=GetPlayInfo&Version=2020-08-01&" + query).
 		Get("")
 	return handleHTTPResponse(resp, err)

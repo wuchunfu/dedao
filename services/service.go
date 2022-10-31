@@ -20,7 +20,7 @@ var (
 		Host:   "dedao.cn",
 	}
 	baseURL   = "https://www.dedao.cn"
-	UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+	UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
 )
 
 // Response dedao success response
@@ -62,6 +62,7 @@ type CookieOptions struct {
 	ISID          string `json:"isid"`
 	Iget          string `json:"iget"`
 	Token         string `json:"token"`
+	CsrfToken     string `json:"csrfToken"`
 	GuardDeviceID string `json:"_guard_device_id" mapstructure:"_guard_device_id"`
 	SID           string `json:"_sid" mapstructure:"_sid"`
 	AcwTc         string `json:"acw_tc" mapstructure:"acw_tc"`
@@ -71,7 +72,7 @@ type CookieOptions struct {
 
 // NewService new service
 func NewService(co *CookieOptions) *Service {
-	cookies := []*http.Cookie{}
+	var cookies []*http.Cookie
 	cookies = append(cookies, &http.Cookie{
 		Name:   "GAT",
 		Value:  co.GAT,
@@ -116,8 +117,12 @@ func NewService(co *CookieOptions) *Service {
 	// client.SetDebug(true)
 	client.SetBaseURL(baseURL).
 		SetCookies(cookies).
-		SetHeader("User-Agent", UserAgent)
+		SetHeaderVerbatim("User-Agent", UserAgent).
+		SetHeaderVerbatim("Xi-DT", "web")
 
+	if co.CsrfToken != "" {
+		client.SetHeaderVerbatim("Xi-Csrf-Token", co.CsrfToken)
+	}
 	return &Service{client: client}
 }
 
