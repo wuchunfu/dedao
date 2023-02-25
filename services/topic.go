@@ -80,7 +80,7 @@ type NotesList struct {
 // NoteDetail note detail
 type NoteDetail struct {
 	DetailTitle     string        `json:"detail_title"`
-	Comb            interface{}   `json:"comb"`
+	Comb            *[]Comb       `json:"comb"`
 	State           int           `json:"state"`
 	IsMine          bool          `json:"is_mine"`
 	IsReposted      bool          `json:"is_reposted"`
@@ -91,12 +91,13 @@ type NoteDetail struct {
 	Folders         interface{}   `json:"folders"`
 	NoteCount       NoteCount     `json:"note_count"`
 	FPart           NoteFPart     `json:"f_part"`
-	SPart           interface{}   `json:"s_part"`
+	SPart           *NoteFPart    `json:"s_part"`
 	ShareURL        string        `json:"share_url"`
 	Class           int           `json:"class"`
 	Level           int           `json:"level"`
 	LevelType       int           `json:"level_type"`
 	LevelPermission bool          `json:"level_permission"`
+	NotesType       int           `json:"notes_type"`
 }
 
 type NoteTopic struct {
@@ -136,27 +137,47 @@ type NoteFPart struct {
 	NoteID        string         `json:"note_id"`
 	NoteIDHazy    string         `json:"note_id_hazy"`
 	Tip           string         `json:"tip"`
-	Images        []interface{}  `json:"images"`
+	Images        []string       `json:"images"`
 	BaseSource    NoteBaseSource `json:"base_source"`
+	StyleNoteLine string         `json:"style_note_line"`
 }
 
 // NoteBaseSource Note BaseSource
 type NoteBaseSource struct {
-	Title          string `json:"title"`
-	SubTitle       string `json:"sub_title"`
-	Img            string `json:"img"`
-	PType          int    `json:"p_type"`
-	PidStr         string `json:"pid_str"`
-	IsPopLoginView bool   `json:"is_pop_login_view"`
-	NeedCheckBuy   bool   `json:"need_check_buy"`
-	URL1           string `json:"url1"`
-	URL2           string `json:"url2"`
+	Title          string   `json:"title"`
+	SubTitle       string   `json:"sub_title"`
+	Img            string   `json:"img"`
+	PType          int      `json:"p_type"`
+	PidStr         string   `json:"pid_str"`
+	NotePtype      int      `json:"note_ptype"`
+	IsPopLoginView bool     `json:"is_pop_login_view"`
+	NeedCheckBuy   bool     `json:"need_check_buy"`
+	URL1           string   `json:"url1"`
+	URL2           string   `json:"url2"`
+	CampHazy       CampHazy `json:"camp_hazy"`
+}
+
+type Comb struct {
+	Uid     int    `json:"uid"`
+	UidHazy string `json:"uid_hazy"`
+	Name    string `json:"name"`
+}
+
+type CampHazy struct {
+	SourceIdHazy string `json:"SourceIdHazy"`
+	OriginIdHazy string `json:"OriginIdHazy"`
+}
+
+type NotesTimeline struct {
+	IsMore bool         `json:"is_more"`
+	MaxId  string       `json:"max_id"`
+	Notes  []NoteDetail `json:"notes"`
 }
 
 // TopicAll topic all
-func (s *Service) TopicAll(page, limit int, all bool) (list *TopicAll, err error) {
+func (s *Service) TopicAll(page, limit int) (list *TopicAll, err error) {
 
-	body, err := s.reqTopicAll(page, limit, all)
+	body, err := s.reqTopicAll(page, limit)
 	if err != nil {
 		return
 	}
@@ -185,6 +206,20 @@ func (s *Service) TopicDetail(id string) (detail *TopicDetail, err error) {
 func (s *Service) TopicNotesList(id string) (list *NotesList, err error) {
 
 	body, err := s.reqTopicNotesList(id)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+
+	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+// TopicNotesTimeline Topic timeline
+func (s *Service) TopicNotesTimeline(maxID string) (list *NotesTimeline, err error) {
+	body, err := s.reqTopicNotesTimeline(maxID)
 	if err != nil {
 		return
 	}

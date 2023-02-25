@@ -3,8 +3,8 @@ package app
 import "github.com/yann0917/dedao/services"
 
 // TopicAll 推荐话题列表
-func TopicAll() (list *services.TopicAll, err error) {
-	list, err = getService().TopicAll(0, 10, true)
+func TopicAll(page, limit int) (list *services.TopicAll, err error) {
+	list, err = getService().TopicAll(page, limit)
 	if err != nil {
 		return
 	}
@@ -23,6 +23,15 @@ func TopicDetail(id string) (detail *services.TopicDetail, err error) {
 // TopicNotesList Topic NotesList
 func TopicNotesList(id string) (list *services.NotesList, err error) {
 	list, err = getService().TopicNotesList(id)
+	if err != nil {
+		return
+	}
+	return
+}
+
+// TopicNotesTimeline Topic timeline
+func TopicNotesTimeline(maxID string) (list *services.NotesTimeline, err error) {
+	list, err = getService().TopicNotesTimeline(maxID)
 	if err != nil {
 		return
 	}

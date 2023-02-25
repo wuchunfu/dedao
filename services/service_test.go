@@ -153,7 +153,7 @@ func TestEbookVIPInfo(t *testing.T) {
 }
 
 func TestTopicAll(t *testing.T) {
-	result, err := service.TopicAll(0, 10, false)
+	result, err := service.TopicAll(0, 10)
 	if err != nil {
 		fmt.Printf("err:=%#v \n", err)
 	}

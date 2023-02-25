@@ -19,6 +19,7 @@ func (s *Service) reqGetLoginAccessToken() (string, error) {
 	}
 	setCookie := index.Header().Values("Set-Cookie")
 	cookies := strings.Split(strings.Join(setCookie, "; "), "; ")
+	fmt.Println(cookies)
 	csrfToken := ""
 	for _, v := range cookies {
 		item := strings.Split(v, "=")
@@ -27,7 +28,7 @@ func (s *Service) reqGetLoginAccessToken() (string, error) {
 			break
 		}
 	}
-
+	fmt.Println(csrfToken)
 	resp, err := s.client.R().
 		SetHeader("Accept", "application/json, text/plain, */*").
 		SetHeaderVerbatim("Xi-Csrf-Token", csrfToken).
@@ -296,19 +297,17 @@ func (s *Service) reqOdobVIPInfo() (io.ReadCloser, error) {
 }
 
 // reqTopicAll 请求推荐话题列表
-func (s *Service) reqTopicAll(page, limit int, all bool) (io.ReadCloser, error) {
+func (s *Service) reqTopicAll(page, limit int) (io.ReadCloser, error) {
 	r := s.client.R()
-	if !all {
-		r = r.SetBody(map[string]int{
-			"page_id": page,
-			"limit":   limit,
-		})
-	}
+	r = r.SetBody(map[string]int{
+		"page_id": page,
+		"limit":   limit,
+	})
 	resp, err := r.Post("/pc/ledgers/topic/all")
 	return handleHTTPResponse(resp, err)
 }
 
-// reqTopicAll 请求话题详情
+// reqTopicDetail 请求话题详情
 func (s *Service) reqTopicDetail(topicID string) (io.ReadCloser, error) {
 	resp, err := s.client.R().
 		SetBody(map[string]interface{}{
@@ -328,6 +327,21 @@ func (s *Service) reqTopicNotesList(topicID string) (io.ReadCloser, error) {
 			"version":       2,
 			"topic_id_hazy": topicID,
 		}).Post("/pc/ledgers/topic/notes/list")
+	return handleHTTPResponse(resp, err)
+}
+
+// reqTopicNotesList 请求话题笔记时间线列表
+func (s *Service) reqTopicNotesTimeline(maxID string) (io.ReadCloser, error) {
+	param := make(map[string]interface{})
+	if maxID != "" {
+		param["max_id"] = maxID
+	}
+	param["count"] = 20
+	param["load_chain"] = true
+	param["version"] = 2
+
+	resp, err := s.client.R().
+		SetBody(param).Post("/pc/ledgers/notes/friends_timeline")
 	return handleHTTPResponse(resp, err)
 }
 
