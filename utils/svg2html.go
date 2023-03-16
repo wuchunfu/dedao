@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -169,7 +170,9 @@ func Svg2Epub(title string, svgContents []*SvgContent, opt EpubOptions) (err err
 	}
 
 	fileName, err := FilePath(filepath.Join(path, FileName(title, "")), "epub", false)
-
+	if err != nil {
+		return err
+	}
 	imageDir, err := Mkdir(OutputDir, "Ebook", "images")
 	if err != nil {
 		return err
@@ -210,7 +213,12 @@ func genPdf(buf *bytes.Buffer, fileName, coverPath string) (err error) {
 
 	dir, _ := CurrentDir()
 	coverPath = filepath.Join(dir, coverPath)
-	pdfg.Cover.Input = "file://" + coverPath
+
+	if runtime.GOOS == "windows" {
+		pdfg.Cover.Input = coverPath
+	} else {
+		pdfg.Cover.Input = "file://" + coverPath
+	}
 
 	pdfg.Dpi.Set(300)
 
