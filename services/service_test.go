@@ -177,3 +177,76 @@ func TestTopicNotesList(t *testing.T) {
 	}
 	fmt.Printf("result:=%v \n", result)
 }
+
+func TestService_SearchHot(t *testing.T) {
+	result, err := service.SearchHot()
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}
+
+func TestService_SunflowerLabelList(t *testing.T) {
+	result, err := service.SunflowerLabelList(2)
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}
+
+func TestService_SunflowerLabelContent(t *testing.T) {
+	enID := "Da1LVnd9dA74k9nB2G6YZrL8eqENW5Q4eVPyaDO0RxV3lzK1vJjmboMXgregjymY"
+	result, err := service.SunflowerLabelContent(enID, 4, 0, 4)
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}
+
+func TestService_SunflowerResourceList(t *testing.T) {
+	result, err := service.SunflowerResourceList()
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}
+
+func TestService_AlgoFilter(t *testing.T) {
+	param := AlgoFilterParam{
+		ClassfcName:  "心理学",
+		LabelId:      "",
+		NavType:      0,
+		NavigationId: "",
+		Page:         0,
+		PageSize:     18,
+		ProductTypes: "66",
+		RequestId:    "",
+		SortStrategy: "HOT",
+		TagsIds:      nil,
+	}
+	result, err := service.AlgoFilter(param)
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}
+
+func TestService_AlgoProduct(t *testing.T) {
+	param := AlgoFilterParam{
+		ClassfcName:  "心理学",
+		LabelId:      "X9vmWzAl54WYrJ78ayq1VjKbDeZRxzpvnpXEBOlvko9L026gdm3AnGNMDkG1x8JR",
+		NavType:      0,
+		NavigationId: "rA8XdO46oA1E4kLX6gvl3MyJxzD7dWPGA6pemYR8B52Kbqj0GnrV9ZaNOVDJBZ5a",
+		Page:         0,
+		PageSize:     18,
+		ProductTypes: "0",
+		RequestId:    "",
+		SortStrategy: "HOT",
+		TagsIds:      nil,
+	}
+	result, err := service.AlgoProduct(param)
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}

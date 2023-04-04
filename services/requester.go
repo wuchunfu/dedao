@@ -288,6 +288,17 @@ func (s *Service) reqEbookCommentList(enid, sort string, page, limit int) (io.Re
 	return handleHTTPResponse(resp, err)
 }
 
+// reqEbookDetail 请求电子书加入书架
+func (s *Service) reqEbookShelfAdd(enIds []string) (io.ReadCloser, error) {
+	resp, err := s.client.R().
+		SetBody(map[string]interface{}{
+			"book_enids": enIds,
+		}).
+		Post("/api/pc/ebook2/v1/bookshelf/add")
+
+	return handleHTTPResponse(resp, err)
+}
+
 // reqOdobVIPInfo 请求每天听本书书 vip info
 func (s *Service) reqOdobVIPInfo() (io.ReadCloser, error) {
 	resp, err := s.client.R().

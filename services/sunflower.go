@@ -79,7 +79,10 @@ type Label struct {
 	Name string `json:"name"`
 }
 
-type Product struct {
+type SunflowerLabelList struct {
+	List []Navigation `json:"list"`
+}
+type ProductSimple struct {
 	ProductType     int      `json:"product_type"`
 	ProductEnid     string   `json:"product_enid"`
 	Title           string   `json:"title"`
@@ -96,13 +99,13 @@ type Product struct {
 }
 
 type SunflowerContent struct {
-	ProductList    []Product    `json:"product_list"`
-	CurrentEnid    string       `json:"current_enid"`
-	NavigationList []Navigation `json:"navigation_list"`
-	PageId         int          `json:"page_id"`
-	PageSize       int          `json:"page_size"`
-	IsMore         int          `json:"is_more"` // 0,1
-	RequestId      string       `json:"request_id"`
+	ProductList    []ProductSimple `json:"product_list"`
+	CurrentEnid    string          `json:"current_enid"`
+	NavigationList []Navigation    `json:"navigation_list"`
+	PageId         int             `json:"page_id"`
+	PageSize       int             `json:"page_size"`
+	IsMore         int             `json:"is_more"` // 0,1
+	RequestId      string          `json:"request_id"`
 }
 
 type SunflowerResource struct {
@@ -164,80 +167,165 @@ type AlgoFilterResp struct {
 	Request AlgoFilterParam `json:"request"`
 }
 
-type T struct {
-	ProductList []struct {
-		ItemType             int      `json:"item_type"`
-		Id                   int      `json:"id"`
-		ProductType          int      `json:"product_type"`
-		ProductId            int      `json:"product_id"`
-		Name                 string   `json:"name"`
-		Intro                string   `json:"intro"`
-		PhaseNum             int      `json:"phase_num"`
-		LearnUserCount       int      `json:"learn_user_count"`
-		Price                int      `json:"price"`
-		CurrentPrice         int      `json:"current_price"`
-		IndexImg             string   `json:"index_img"`
-		HorizontalImage      string   `json:"horizontal_image"`
-		LecturersImg         string   `json:"lecturers_img"`
-		PriceDesc            string   `json:"price_desc"`
-		IsBuy                int      `json:"is_buy"`
-		IsVip                bool     `json:"is_vip"`
-		Trackinfo            string   `json:"trackinfo"`
-		LogId                string   `json:"log_id"`
-		LogType              string   `json:"log_type"`
-		CornerImg            string   `json:"corner_img"`
-		LecturerNameAndTitle string   `json:"lecturer_name_and_title"`
-		LecturersVStatus     int      `json:"lecturers_v_status"`
-		CornerImgVertical    string   `json:"corner_img_vertical"`
-		LecturerName         string   `json:"lecturer_name"`
-		LecturerTitle        string   `json:"lecturer_title"`
-		AuthorList           []string `json:"author_list"`
-		IdOut                string   `json:"id_out"`
-		IsLimitFree          bool     `json:"is_limit_free"`
-		HasPlayAuth          bool     `json:"has_play_auth"`
-		ButtonType           int      `json:"button_type"`
-		AudioId              string   `json:"audio_id"`
-		AliasId              string   `json:"alias_id"`
-		InBookrack           bool     `json:"in_bookrack"`
-		IsShowNewbook        bool     `json:"is_show_newbook"`
-		IsSubscribe          bool     `json:"is_subscribe"`
-		OnlineTime           string   `json:"online_time"`
-		ArticleInfo          struct {
-			ArticleId            int    `json:"article_id"`
-			OriginArticleId      int    `json:"origin_article_id"`
-			ArticleAudioDuration int    `json:"article_audio_duration"`
-			ArticleTitle         string `json:"article_title"`
-			ArticleIntro         string `json:"article_intro"`
-			Image                string `json:"image"`
-		} `json:"article_info"`
-		NeedLogin             int    `json:"need_login"`
-		IsOnBookshelf         bool   `json:"is_on_bookshelf"`
-		Duration              int    `json:"duration"`
-		CollectionNum         int    `json:"collection_num"`
-		DdUrl                 string `json:"dd_url"`
-		LearningDaysDesc      string `json:"learning_days_desc"`
-		IsPreferential        int    `json:"is_preferential"`
-		IsCountDown           int    `json:"is_count_down"`
-		PreferentialStartTime int    `json:"preferential_start_time"`
-		PreferentialEndTime   int    `json:"preferential_end_time"`
-		EarlyBirdPrice        int    `json:"early_bird_price"`
-		TimeNow               int    `json:"time_now"`
-		HotLearnDesc          string `json:"hot_learn_desc"`
-		Score                 string `json:"score"`
-		Introduction          string `json:"introduction"`
-		UserScoreCount        int    `json:"user_score_count"`
-		Progress              int    `json:"progress"`
-		Metrics               string `json:"metrics"`
-		CostIntro             struct {
-			Price string `json:"price"`
-		} `json:"cost_intro"`
-		ConsumedNum          int           `json:"consumed_num"`
-		FreeMaximum          int           `json:"free_maximum"`
-		BSellingChannelGroup int           `json:"b_selling_channel_group"`
-		TrackInfo            string        `json:"track_info"`
-		SortValues           []interface{} `json:"sort_values"`
-	} `json:"product_list"`
-	RequestId string `json:"request_id"`
-	Total     int    `json:"total"`
-	IsMore    int    `json:"is_more"`
+type CostIntro struct {
+	Price string `json:"price"`
+}
+
+type ArticleSimpleInfo struct {
+	ArticleId            int    `json:"article_id"`
+	OriginArticleId      int    `json:"origin_article_id"`
+	ArticleAudioDuration int    `json:"article_audio_duration"`
+	ArticleTitle         string `json:"article_title"`
+	ArticleIntro         string `json:"article_intro"`
+	Image                string `json:"image"`
+}
+
+type AlgoProduct struct {
+	ItemType              int               `json:"item_type"`
+	Id                    int               `json:"id"`
+	ProductType           int               `json:"product_type"`
+	ProductId             int               `json:"product_id"`
+	Name                  string            `json:"name"`
+	Intro                 string            `json:"intro"`
+	PhaseNum              int               `json:"phase_num"`
+	LearnUserCount        int               `json:"learn_user_count"`
+	Price                 int               `json:"price"`
+	CurrentPrice          int               `json:"current_price"`
+	IndexImg              string            `json:"index_img"`
+	HorizontalImage       string            `json:"horizontal_image"`
+	LecturersImg          string            `json:"lecturers_img"`
+	PriceDesc             string            `json:"price_desc"`
+	IsBuy                 int               `json:"is_buy"`
+	IsVip                 bool              `json:"is_vip"`
+	Trackinfo             string            `json:"trackinfo"`
+	LogId                 string            `json:"log_id"`
+	LogType               string            `json:"log_type"`
+	CornerImg             string            `json:"corner_img"`
+	LecturerNameAndTitle  string            `json:"lecturer_name_and_title"`
+	LecturersVStatus      int               `json:"lecturers_v_status"`
+	CornerImgVertical     string            `json:"corner_img_vertical"`
+	LecturerName          string            `json:"lecturer_name"`
+	LecturerTitle         string            `json:"lecturer_title"`
+	AuthorList            []string          `json:"author_list"`
+	IdOut                 string            `json:"id_out"`
+	IsLimitFree           bool              `json:"is_limit_free"`
+	HasPlayAuth           bool              `json:"has_play_auth"`
+	ButtonType            int               `json:"button_type"`
+	AudioId               string            `json:"audio_id"`
+	AliasId               string            `json:"alias_id"`
+	InBookrack            bool              `json:"in_bookrack"`
+	IsShowNewbook         bool              `json:"is_show_newbook"`
+	IsSubscribe           bool              `json:"is_subscribe"`
+	OnlineTime            string            `json:"online_time"`
+	ArticleInfo           ArticleSimpleInfo `json:"article_info"`
+	NeedLogin             int               `json:"need_login"`
+	IsOnBookshelf         bool              `json:"is_on_bookshelf"`
+	Duration              int               `json:"duration"`
+	CollectionNum         int               `json:"collection_num"`
+	DdUrl                 string            `json:"dd_url"`
+	LearningDaysDesc      string            `json:"learning_days_desc"`
+	IsPreferential        int               `json:"is_preferential"`
+	IsCountDown           int               `json:"is_count_down"`
+	PreferentialStartTime int               `json:"preferential_start_time"`
+	PreferentialEndTime   int               `json:"preferential_end_time"`
+	EarlyBirdPrice        int               `json:"early_bird_price"`
+	TimeNow               int               `json:"time_now"`
+	HotLearnDesc          string            `json:"hot_learn_desc"`
+	Score                 string            `json:"score"`
+	Introduction          string            `json:"introduction"`
+	UserScoreCount        int               `json:"user_score_count"`
+	Progress              int               `json:"progress"`
+	Metrics               string            `json:"metrics"`
+	CostIntro             CostIntro         `json:"cost_intro"`
+	ConsumedNum           int               `json:"consumed_num"`
+	FreeMaximum           int               `json:"free_maximum"`
+	BSellingChannelGroup  int               `json:"b_selling_channel_group"`
+	TrackInfo             string            `json:"track_info"`
+	SortValues            []interface{}     `json:"sort_values"`
+}
+
+type AlgoProductResp struct {
+	ProductList []AlgoProduct `json:"product_list"`
+	RequestId   string        `json:"request_id"`
+	Total       int           `json:"total"`
+	IsMore      int           `json:"is_more"`
+}
+
+// SearchHot 搜索框热门搜索
+func (s *Service) SearchHot() (list *SearchTot, err error) {
+	body, err := s.reqSearchHot()
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+// SunflowerLabelList 首页导航标签列表
+// nType 2-好看又好查的电子书, 4-精选课程
+func (s *Service) SunflowerLabelList(nType int) (list *SunflowerLabelList, err error) {
+	body, err := s.reqSunflowerLabelList(nType)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+// SunflowerLabelContent 首页导航标签内容列表
+// nType 2-好看又好查的电子书, 4-精选课程
+// page default=0 pageSize default=4
+func (s *Service) SunflowerLabelContent(enID string, nType, page, pageSize int) (list *SunflowerContent, err error) {
+	body, err := s.reqSunflowerLabelContent(enID, nType, page, pageSize)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+// SunflowerResourceList 首页免费专区
+func (s *Service) SunflowerResourceList() (list *SunflowerResourceList, err error) {
+	body, err := s.reqSunflowerResourceList()
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+func (s *Service) AlgoFilter(param AlgoFilterParam) (resp *AlgoFilterResp, err error) {
+	body, err := s.reqAlgoFilter(param)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &resp); err != nil {
+		return
+	}
+	return
+}
+
+func (s *Service) AlgoProduct(param AlgoFilterParam) (resp *AlgoProductResp, err error) {
+	body, err := s.reqAlgoProduct(param)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &resp); err != nil {
+		return
+	}
+	return
 }

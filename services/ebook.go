@@ -172,6 +172,12 @@ type EbookScore struct {
 	BookStatus   int      `json:"book_status"`
 }
 
+type EbookShelfAddResp struct {
+	Data struct {
+		N int `json:"n"`
+	} `json:"data"`
+}
+
 // EbookDetail get ebook detail
 func (s *Service) EbookDetail(enid string) (detail *EbookDetail, err error) {
 
@@ -235,6 +241,20 @@ func (s *Service) EbookCommentList(id, sort string, page, limit int) (list *Eboo
 	}
 	defer body.Close()
 	if err = handleJSONParse(body, &list); err != nil {
+		return
+	}
+	return
+}
+
+// EbookShelfAdd add ebook shelf
+func (s *Service) EbookShelfAdd(ids []string) (resp *EbookShelfAddResp, err error) {
+
+	body, err := s.reqEbookShelfAdd(ids)
+	if err != nil {
+		return
+	}
+	defer body.Close()
+	if err = handleJSONParse(body, &resp); err != nil {
 		return
 	}
 	return
