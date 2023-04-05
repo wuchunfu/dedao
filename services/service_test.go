@@ -178,6 +178,13 @@ func TestTopicNotesList(t *testing.T) {
 	fmt.Printf("result:=%v \n", result)
 }
 
+func TestService_GetHomeInitialState(t *testing.T) {
+	result, err := service.GetHomeInitialState()
+	if err != nil {
+		fmt.Printf("err:=%#v \n", err)
+	}
+	fmt.Printf("result:=%v \n", result)
+}
 func TestService_SearchHot(t *testing.T) {
 	result, err := service.SearchHot()
 	if err != nil {

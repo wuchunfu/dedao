@@ -1,6 +1,9 @@
 package services
 
 import (
+	"encoding/json"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -249,6 +252,83 @@ type AlgoProductResp struct {
 	RequestId   string        `json:"request_id"`
 	Total       int           `json:"total"`
 	IsMore      int           `json:"is_more"`
+}
+
+type HomeModule struct {
+	Description string `json:"description"`
+	Ext1        string `json:"ext1"`
+	Ext2        string `json:"ext2"`
+	Ext3        string `json:"ext3"`
+	Ext4        string `json:"ext4"`
+	Ext5        string `json:"ext5"`
+	Id          int    `json:"id"`
+	IsShow      int    `json:"isShow"`
+	Name        string `json:"name"`
+	Sort        int    `json:"sort"`
+	Title       string `json:"title"`
+	Type        string `json:"type"`
+}
+
+type HomeCategory struct {
+	EnglishName  string  `json:"englishName"`
+	Enid         string  `json:"enid"`
+	Icon         string  `json:"icon"`
+	Id           int     `json:"id"`
+	LabelList    []Label `json:"labelList"`
+	Name         string  `json:"name"`
+	NavType      int     `json:"navType"`
+	RelationId   int     `json:"relationId"`
+	RelationName string  `json:"relationName"`
+	Type         int     `json:"type"`
+}
+
+type Banner struct {
+	BeginTime int    `json:"beginTime"`
+	EndTime   int    `json:"endTime"`
+	Id        int    `json:"id"`
+	Img       string `json:"img"`
+	IsDelete  int    `json:"isDelete"`
+	ModuleId  int    `json:"moduleId"`
+	Sort      int    `json:"sort"`
+	SourceId  string `json:"sourceId"`
+	Title     string `json:"title"`
+	Url       string `json:"url"`
+	UrlType   int    `json:"urlType"`
+}
+
+type HomeData struct {
+	ModuleList   []HomeModule   `json:"moduleList"`
+	CategoryList []HomeCategory `json:"categoryList"`
+	Banner       []Banner       `json:"banner"`
+}
+type HomeInitState struct {
+	IsLogin  bool     `json:"isLogin"`
+	HomeData HomeData `json:"homeData"`
+	Uid      string   `json:"uid"`
+}
+
+func (s *Service) GetHomeInitialState() (state HomeInitState, err error) {
+	resp, err := s.client.R().Get(baseURL)
+	if err != nil {
+		return
+	}
+	if resp.IsSuccess() {
+		// 匹配 <script> window.__INITIAL_STATE__=
+		src := string(resp.Body())
+		reg := regexp.MustCompile(`<script>[\S\s]+?</script>`)
+		list := reg.FindAllString(src, -1)
+		for _, item := range list {
+			if strings.Contains(item, "window.__INITIAL_STATE__=") {
+				reg = regexp.MustCompile(`{[\S\s]+[^}{]*?}`)
+				result := reg.FindAllString(item, -1)
+				if len(result) > 0 {
+					err = json.Unmarshal([]byte(result[0]), &state)
+				}
+				break
+			}
+		}
+	}
+	return
 }
 
 // SearchHot 搜索框热门搜索
