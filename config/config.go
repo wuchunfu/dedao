@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -122,7 +121,7 @@ func (c *ConfigsData) initActiveUser() error {
 func (c *ConfigsData) Save() error {
 	err := c.lazyOpenConfigFile()
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return err
 	}
 
@@ -147,19 +146,19 @@ func (c *ConfigsData) Save() error {
 	// 减掉多余的部分
 	err = c.configFile.Truncate(int64(len(data)))
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return err
 	}
 
 	_, err = c.configFile.Seek(0, io.SeekStart)
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return err
 	}
 
 	_, err = c.configFile.Write(data)
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return err
 	}
 
@@ -234,11 +233,18 @@ func New(configFilePath string) *ConfigsData {
 
 // GetConfigDir config file dir
 func GetConfigDir() string {
-	configDir, err := os.Getwd()
-	if err != nil {
-		return ""
+	configDir, ok := os.LookupEnv(EnvConfigDir)
+	if ok {
+		if filepath.IsAbs(configDir) {
+			return configDir
+		}
 	}
-	return configDir
+	home, ok := os.LookupEnv("HOME")
+	if ok {
+		return filepath.Join(home, ".config", "dedao")
+	}
+
+	return filepath.Join("/tmp", "dedao")
 }
 
 // ActiveUserService user
